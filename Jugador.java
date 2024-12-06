@@ -20,4 +20,14 @@ public class Jugador {
             System.out.println(nombre+" ahora tiene "+vida+" de vida.");
         }
     }
+    
+    public void restaurarVida(int cantidad) {
+        if (estado){
+            vida+=cantidad;
+            System.out.println(nombre+" ha recuperado vida. Vida actual: "+vida);
+        }else{
+            System.out.println(nombre+" está fuera de combate y no puede recuperar vida.");
+        }
+    }
+
 }
