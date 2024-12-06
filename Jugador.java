@@ -40,19 +40,19 @@ public class Jugador {
         if (obj instance Cigarro){
             obj.usar();
             caja.remove(obj);
-        }else if{ (obj instance Cerveza)
+        }else if (obj instance Cerveza){
             obj.usar();
             caja.remove(obj);
-        }else if{ (obj instance Adrenalina)
+        }else if (obj instance Adrenalina){
             obj.usar();
             caja.remove(obj);
-        }else if{ (obj instance Lupa)
+        }else if (obj instance Lupa){
             obj.usar();
             caja.remove(obj);
-        }else if{ (obj instance Esposas)
+        }else if (obj instance Esposas){
             obj.usar();
             caja.remove(obj);
-        }else if{ (obj instance Sierra)
+        }else if (obj instance Sierra){
             obj.usar();
             caja.remove(obj);
         }
