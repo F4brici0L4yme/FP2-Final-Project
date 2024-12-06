@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+hide class circle
+hide interface circle
+hide abstract circle
+
+class Tablero {
+
+}
+
+abstract class CajaObjetos extends Tablero{
+
+}
+
+class Escopeta extends Tablero {
+    - balas : ArrayList<String>
+    - random : Random
+    + Escopeta() : void
+    - cargarBalas() : void
+    + disparar() : void
+}
+
+class Jugador extends Tablero {
+    - nombre : String
+    - vida : int = 4
+    - estado : boolean = true
+    - caja : ArrayList<CajaObjetos>
+    + jugador(String nombre)
+    + reducirVida(int cantidad) : void
+    + restaurarVida(int cantidad) : void
+    + mostrarObjetos() : void
+    + usarObjeto(CajaObjeto obj) : void
+    + agregarObjeto(CajaObjetos obj) : void
+}
+
+class Cigarro extends CajaObjetos {
+
+}
+
+class Lupa extends CajaObjetos {
+
+}
+
+class Cerveza extends CajaObjetos {
+
+}
+
+class Adrenalina extends CajaObjetos {
+
+}
+
+class Esposas extends CajaObjetos {
+
+}
+
+class Sierra extends CajaObjetos {
+
+}
+
+class IniciarJuego {
+    + main(String[] args) : void
+}
+IniciarJuego ..> Tablero
+CajaObjetos --* Jugador
+@enduml
