@@ -1,5 +1,6 @@
 package ProyectoFinalLabs;
 
+import java.util.*;
 public class Jugador {
     String nombre;
     int vida=4;
