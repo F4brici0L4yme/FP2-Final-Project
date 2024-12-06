@@ -29,5 +29,12 @@ public class Jugador {
             System.out.println(nombre+" está fuera de combate y no puede recuperar vida.");
         }
     }
-
+    
+    public void mostrarObjetos(){
+        for (CajaObjetos obj : caja){
+            System.out.println(obj.getName());
+        }
+    }
+    
+    
 }
