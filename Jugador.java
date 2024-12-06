@@ -58,4 +58,12 @@ public class Jugador {
         }
     }
 
+    public void agregarObjeto(CajaObjetos obj) {
+        if (caja.size()<4){
+            caja.add(obj);
+            System.out.println(obj.getName() + " agregado a la caja.");
+        }else{
+            System.out.println("La caja está llena. No se puede agregar "+obj.getName());
+        }
+    } 
 }
