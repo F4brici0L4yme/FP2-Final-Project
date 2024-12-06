@@ -2,10 +2,10 @@ package ProyectoFinalLabs;
 
 import java.util.*;
 public class Jugador {
-    String nombre;
-    int vida=4;
-    boolean estado=true;
-    ArrayList<CajaObjetos> caja;
+    private String nombre;
+    private int vida=4;
+    private boolean estado=true;
+    private ArrayList<CajaObjetos> caja;
     
     public Jugador(String nombre) {
         this.nombre=nombre;
