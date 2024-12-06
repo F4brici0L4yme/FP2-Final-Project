@@ -6,4 +6,8 @@ public class Jugador {
     boolean estado=true;
     ArrayList<CajaObjetos> caja;
     
+    public Jugador(String nombre) {
+        this.nombre=nombre;
+    }
+    
 }
