@@ -1,11 +1,9 @@
-package ProyectoFinalLabs;
-
 import java.util.*;
 public class Jugador {
     private String nombre;
     private int vida=4;
     private boolean estado=true;
-    private ArrayList<CajaObjetos> caja;
+    private ArrayList<CajaDeObjetos> obs;
     
     public Jugador(String nombre) {
         this.nombre=nombre;
@@ -32,39 +30,39 @@ public class Jugador {
     }
     
     public void mostrarObjetos(){
-        for (CajaObjetos obj : caja){
+        for (CajaDeObjetos obj : obs){
             System.out.println(obj.getName());
         }
     }
     
-    public void usarObjeto(CajaObjeto obj){
+    public void usarObjeto(obsObjeto obj){
         if (obj instance Cigarro){
             obj.usar();
-            caja.remove(obj);
+            obs.remove(obj);
         }else if (obj instance Cerveza){
             obj.usar();
-            caja.remove(obj);
+            obs.remove(obj);
         }else if (obj instance Adrenalina){
             obj.usar();
-            caja.remove(obj);
+            obs.remove(obj);
         }else if (obj instance Lupa){
             obj.usar();
-            caja.remove(obj);
+            obs.remove(obj);
         }else if (obj instance Esposas){
             obj.usar();
-            caja.remove(obj);
+            obs.remove(obj);
         }else if (obj instance Sierra){
             obj.usar();
-            caja.remove(obj);
+            obs.remove(obj);
         }
     }
 
-    public void agregarObjeto(CajaObjetos obj) {
-        if (caja.size()<4){
-            caja.add(obj);
-            System.out.println(obj.getName() + " agregado a la caja.");
+    public void agregarObjeto(CajaDeObjetos obj) {
+        if (obs.size()<4){
+            obs.add(obj);
+            System.out.println(obj.getName() + " agregado a la obs.");
         }else{
-            System.out.println("La caja está llena. No se puede agregar "+obj.getName());
+            System.out.println("La obs está llena. No se puede agregar "+obj.getName());
         }
     } 
 }
