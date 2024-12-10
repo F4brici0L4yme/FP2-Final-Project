@@ -9,7 +9,7 @@ class Tablero {
 
 }
 
-abstract class CajaObjetos extends Tablero{
+abstract class CajaDeObjetos extends Tablero{
 
 }
 
@@ -34,27 +34,36 @@ class Jugador extends Tablero {
     + agregarObjeto(CajaObjetos obj) : void
 }
 
-class Cigarro extends CajaObjetos {
+class Cigarro extends CajaDeObjetos {
+    
+}
+
+class Lupa extends CajaDeObjetos {
+    + UsarObjeto(Escopeta e) : void
+    + crearContenedor(JFrame ventana, ArrayList<String> balas) : void
+}
+
+class Cerveza extends CajaDeObjetos {
 
 }
 
-class Lupa extends CajaObjetos {
+class Adrenalina extends CajaDeObjetos {
+    - botones : ArrayList<JButton>
+    - obs : ArrayList<CajaDeObjetos>
+    - misObs : ArrayList<CajaDeObjetos>
+    - ventana : JFrame; 
+    - cierreAutomatico : Timer
+    + recibirCajaDelJugador(ArrayList<CajaDeObjetos> obs) : void
+    + UsarObjeto(ArrayList<CajaDeObjetos> enemigo) : void
+    + crearContenedor(JFrame ventana) : void
+    + llenarBotones() : void
+}
+
+class Esposas extends CajaDeObjetos {
 
 }
 
-class Cerveza extends CajaObjetos {
-
-}
-
-class Adrenalina extends CajaObjetos {
-
-}
-
-class Esposas extends CajaObjetos {
-
-}
-
-class Sierra extends CajaObjetos {
+class Sierra extends CajaDeObjetos {
 
 }
 
@@ -62,5 +71,5 @@ class IniciarJuego {
     + main(String[] args) : void
 }
 IniciarJuego ..> Tablero
-CajaObjetos --* Jugador
+CajaDeObjetos --* Jugador
 @enduml
