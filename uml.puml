@@ -5,8 +5,33 @@ hide class circle
 hide interface circle
 hide abstract circle
 
-class Tablero {
+class JFrame {
+    - title : String  
+    - width : int  
+    - height : int  
+    - visible : boolean  
+    + JFrame( )
+    + JFrame(String)
+    + getHeight( ) : int
+    + getWidth( ) : int
+    + isVisible( ) : boolean
+    + setSize(int, int) : void
+    + setVisible(boolean) : void
+}
 
+class Tablero extends JFrame {
+    + shotgun : ImageIcon
+    - imagenJugador1, imagenJugador2 : JLabel
+    - vidaasJugador1, vidasJugador2 : JLabel
+    - panelInventario : JPanel
+    - logEventos : JTextArea
+    - turnoJugador1 = true : boolean
+    + Tablero()
+    + generarInventario() : void
+    + mostrarOpcionesDisparo() : void
+    + actualizarVidas() : void
+    + verificarGanador() : void
+    + cambiarTurno(); : void
 }
 
 abstract class CajaDeObjetos extends Tablero{
@@ -16,7 +41,7 @@ abstract class CajaDeObjetos extends Tablero{
 class Escopeta extends Tablero {
     - balas : ArrayList<String>
     - random : Random
-    + Escopeta() : void
+    + Escopeta() 
     - cargarBalas() : void
     + disparar() : void
 }
@@ -35,7 +60,7 @@ class Jugador extends Tablero {
 }
 
 class Cigarro extends CajaDeObjetos {
-    
+
 }
 
 class Lupa extends CajaDeObjetos {
@@ -51,7 +76,7 @@ class Adrenalina extends CajaDeObjetos {
     - botones : ArrayList<JButton>
     - obs : ArrayList<CajaDeObjetos>
     - misObs : ArrayList<CajaDeObjetos>
-    - ventana : JFrame; 
+    - ventana : JFrame;
     - cierreAutomatico : Timer
     + recibirCajaDelJugador(ArrayList<CajaDeObjetos> obs) : void
     + UsarObjeto(ArrayList<CajaDeObjetos> enemigo) : void
