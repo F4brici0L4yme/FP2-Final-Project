@@ -1,89 +1,111 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import javax.swing.*;
 
 public class Tablero extends JFrame {
-    /*Añadir clases de jugadores */
     public ImageIcon shotgun = new ImageIcon("./images/shotgun.png");
-    private JLabel imagenJugador1, imagenJugador2;
-    private JLabel vidasJugador1, vidasJugador2;
-    private JPanel panelInventario;
-    private JTextArea logEventos;
-    private boolean turnoJugador1 = true;
+    public ImageIcon corazonLleno = new ImageIcon("./images/vida.png");
+    public ImageIcon fondo = new ImageIcon("./images/bg.jpg");
+    public ImageIcon imagenP1 = new ImageIcon("./images/p1.png");
+    public ImageIcon imagenP2 = new ImageIcon("./images/p2.png");
+    public ImageIcon balaAzulIcon = new ImageIcon("./images/balaAzul.png");
+    public ImageIcon balaRojaIcon = new ImageIcon("./images/balaRoja.png");
+    public JLabel imagenJugadorActual; // Muestra el jugador actual
+    public JPanel panelVidasJ1, panelVidasJ2;
+    public JPanel panelInventario;
+    public JTextArea logEventos;
+    public boolean turnoJugador1 = false;
+    public int vidaJ1 = 4;
+    public int vidaJ2 = 4;
+    Escopeta EscopetaOBJ = new Escopeta();
+    // Ingreso de nombres de jugadores
+    String P1Nombre = JOptionPane.showInputDialog("Ingrese el nombre del jugador 1:");
+    public Jugador p1 = new Jugador(P1Nombre);
 
-    private int vidaJ1 = 4;
-    private int vidaJ2 = 4;
+    String P2Nombre = JOptionPane.showInputDialog("Ingrese el nombre del jugador 2:");
+    public Jugador p2 = new Jugador(P2Nombre);
 
     public Tablero() {
-        setTitle("Duelo 1v1: Buckshot Roulette");
+        setTitle("Peruvian Roulette");
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        createContents();
+        setVisible(true);
+    }
 
+    public void generarInventario() {
+        // Aquí puedes agregar lógica para generar objetos aleatorios al inventario
+        panelInventario.removeAll();
+        JLabel objetoEjemplo = new JLabel("Objeto de Ejemplo");
+        panelInventario.add(objetoEjemplo);
+        panelInventario.revalidate();
+        panelInventario.repaint();
+    }
+
+    public void createContents() {
         // Panel izquierdo: Vidas
         JPanel panelVidas = new JPanel();
         panelVidas.setLayout(new GridLayout(2, 1));
-        vidasJugador1 = new JLabel("Vida J1: " + vidaJ1);
-        vidasJugador2 = new JLabel("Vida J2: " + vidaJ2);
-        panelVidas.add(vidasJugador1);
-        panelVidas.add(vidasJugador2);
-        add(panelVidas, BorderLayout.WEST);
 
-        // Panel central: Escopeta y fondo
-        JPanel panelCentral = new JPanel();
-        panelCentral.setLayout(new BorderLayout());
-        JButton botonEscopeta = new JButton("Escopeta");
-        botonEscopeta.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mostrarOpcionesDisparo();
-            }
-        });
+        panelVidasJ1 = new JPanel(new FlowLayout(FlowLayout.LEFT));/*LEFT hace que no se ajuste al centro y quede más chevere */
+        actualizarVidas(panelVidasJ1, vidaJ1);
+        panelVidas.add(panelVidasJ1);
+
+        panelVidasJ2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        actualizarVidas(panelVidasJ2, vidaJ2);
+        panelVidas.add(panelVidasJ2);
+
+        add(panelVidas, BorderLayout.WEST);
+        /*PANEL CENTRAL */
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        JButton botonEscopeta = new JButton(shotgun);
+        botonEscopeta.setToolTipText("Úsame...");
+        botonEscopeta.addActionListener(e -> mostrarOpcionesDisparo());
         panelCentral.add(botonEscopeta, BorderLayout.CENTER);
         add(panelCentral, BorderLayout.CENTER);
+        
+        /*PANEL IZQUIERDO*/
 
-        // Panel derecho: Inventario
-        panelInventario = new JPanel();
-        panelInventario.setLayout(new GridLayout(8, 1)); // Espacio para 5 objetos
+        panelInventario = new JPanel(new GridLayout(8, 1));
         panelInventario.setBorder(BorderFactory.createTitledBorder("Inventario"));
-        generarInventario(); // Inventario inicial del J1
+        generarInventario();
         add(panelInventario, BorderLayout.EAST);
 
-        // Panel inferior: Log de eventos y jugador activo
-        JPanel panelInferior = new JPanel();
-        panelInferior.setLayout(new BorderLayout());
+        /*PANEL INFERIOR*/
+        JPanel panelInferior = new JPanel(new BorderLayout());
 
-        // Imagen del jugador activo
-        imagenJugador1 = new JLabel(new ImageIcon("./images/p1.png")); // Reemplazar con ruta de la imagen
-        imagenJugador2 = new JLabel(new ImageIcon("./images/p2.png")); // Reemplazar con ruta de la imagen
-        panelInferior.add(imagenJugador1, BorderLayout.WEST);
+        imagenJugadorActual = new JLabel(imagenP1); // Jugador 1 empieza
+        panelInferior.add(imagenJugadorActual, BorderLayout.WEST);
 
-        // Log de eventos
         logEventos = new JTextArea(5, 30);
         logEventos.setEditable(false);
         JScrollPane scrollLog = new JScrollPane(logEventos);
+        scrollLog.setPreferredSize(new Dimension(300, 30)); // Ancho: 300, Alto: 80
+
         scrollLog.setBorder(BorderFactory.createTitledBorder("Eventos del Juego"));
         panelInferior.add(scrollLog, BorderLayout.CENTER);
 
         add(panelInferior, BorderLayout.SOUTH);
+        logEventos.append(EscopetaOBJ.cargarBalas());
     }
 
-    private void generarInventario() {
-        /*Aquí debemos de agregar con Random los objetos a la clase Jugador y mostrarlos en el panel */
-    }
+    public void mostrarOpcionesDisparo() {
+        String[] opciones = {"Al enemigo", "A ti mismo"};
+        int respuesta = JOptionPane.showOptionDialog(
+                this, "¿A quién deseas disparar?", "Disparo",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                shotgun, opciones, opciones[0]
+        );
 
-    private void mostrarOpcionesDisparo() {
-        String[] opciones = {"A ti mismo", "Al enemigo"};
-        int respuesta = JOptionPane.showOptionDialog(null, "Disparar...", "", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, shotgun, opciones, opciones[0]);
-        if (respuesta == 0) { // Disparar al oponente
+        if (respuesta == 0) { // Al enemigo
             if (turnoJugador1) {
-                /*Llamar a escopeta para que haga el daño corresponiente */
                 vidaJ2--;
                 logEventos.append("J1 disparó a J2. Vida de J2: " + vidaJ2 + "\n");
             } else {
                 vidaJ1--;
                 logEventos.append("J2 disparó a J1. Vida de J1: " + vidaJ1 + "\n");
             }
-        } else if (respuesta == 1) { // Disparar a sí mismo
+        } else if (respuesta == 1) { // A sí mismo
             if (turnoJugador1) {
                 vidaJ1--;
                 logEventos.append("J1 disparó a sí mismo. Vida de J1: " + vidaJ1 + "\n");
@@ -92,45 +114,43 @@ public class Tablero extends JFrame {
                 logEventos.append("J2 disparó a sí mismo. Vida de J2: " + vidaJ2 + "\n");
             }
         }
-        /*Agrega logs para el uso de obejtos */
 
-        actualizarVidas();
+        actualizarVidas(panelVidasJ1, vidaJ1);
+        actualizarVidas(panelVidasJ2, vidaJ2);
         verificarGanador();
         cambiarTurno();
     }
 
-    private void actualizarVidas() {
-        vidasJugador1.setText("Vida J1: " + vidaJ1);
-        vidasJugador2.setText("Vida J2: " + vidaJ2);
+    public void actualizarVidas(JPanel panelVidas, int vidas) {
+        panelVidas.removeAll();
+        for (int i = 0; i < vidas; i++) {
+            JLabel corazon = new JLabel(corazonLleno);
+            panelVidas.add(corazon);
+        }
+        panelVidas.revalidate();
+        panelVidas.repaint();
     }
-
-    private void verificarGanador() {
+    /*Se muestra y verifica al ganador */
+    public void verificarGanador() {
         if (vidaJ1 <= 0 || vidaJ2 <= 0) {
-            String ganador = vidaJ1 > 0 ? "J1" : "J2";
+            String ganador = (vidaJ1 > 0) ? p1.getnombre() : p2.getnombre();
             JOptionPane.showMessageDialog(this, "¡El ganador es " + ganador + "!");
             System.exit(0);
         }
     }
-
-    private void cambiarTurno() {
+    /*Se cambia de turno e imagen que se muestra en pantalla */
+    public void cambiarTurno() {
         turnoJugador1 = !turnoJugador1;
-
-        // Cambiar imágenes
-        if (turnoJugador1) {
-            imagenJugador1.setIcon(new ImageIcon("./images/p1.png"));
-            imagenJugador2.setIcon(new ImageIcon("./images/p2.png"));
-        } else {
-            imagenJugador1.setIcon(new ImageIcon("./images/p2.png"));
-            imagenJugador2.setIcon(new ImageIcon("./images/p1.png"));
-        }
-
-        generarInventario(); 
+        if (turnoJugador1)
+            imagenJugadorActual.setIcon(imagenP1);
+        else
+            imagenJugadorActual.setIcon(imagenP2);
+        generarInventario();
     }
-
+    
     public static void main(String[] args) {
-            SwingUtilities.invokeLater(() -> {
-            Tablero frame = new Tablero();
-            frame.setVisible(true);
-        });
+        new Tablero();
     }
 }
+
+
