@@ -1,0 +1,144 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+hide class circle
+hide interface circle
+hide abstract circle
+
+class JFrame {
+    - title : String
+    - width : int
+    - height : int
+    - visible : boolean
+    + JFrame( )
+    + JFrame(String)
+    + getHeight( ) : int
+    + getWidth( ) : int
+    + isVisible( ) : boolean
+    + setSize(int, int) : void
+    + setVisible(boolean) : void
+}
+
+class Tablero extends JFrame {
+    + shotgun : ImageIcon
+    - imagenJugador1, imagenJugador2 : JLabel
+    - vidaasJugador1, vidasJugador2 : JLabel
+    - panelInventario : JPanel
+    - logEventos : JTextArea
+    - turnoJugador1 = true : boolean
+    + Tablero()
+    + generarInventario() : void
+    + mostrarOpcionesDisparo() : void
+    + actualizarVidas() : void
+    + verificarGanador() : void
+    + cambiarTurno(); : void
+}
+
+interface DanioBala {
+    +int DANIO_NORMAL
+}
+
+class Escopeta implements DanioBala {
+    - balas : ArrayList<String>
+    - random : Random
+    + Escopeta()
+    + cargarBalas() : void
+    + getMunicion() : ArrayList<String>
+    + disparar(Jugador j) : void
+    + esBalaSerrucho() :void
+}
+
+class Jugador{
+    - nombre : String
+    - vida=4 : int 
+    - estado = true : boolean
+    - obs : CajaDeObjetos
+    - esposado = false : boolean
+    - e : Escopeta
+    - botones : ArrayList<JButton>
+    - objeto : Objeto
+    + jugador(String nombre)
+    + jugador()
+    + aumentarVida () : void
+    + reducirVida(int cantidad) : void
+    + mostrarObjetos() : void
+    + repartirObjetos() : void
+    + seleccionarObjeto() : void
+    + objeto_a_Usar() : Objeto
+    + estaEsposado() : boolean
+    + getVida() : int
+    + getNombre() : String
+    + getCajaObjetos() : CajaDeObjetos
+}
+
+abstract class Objeto {
+    + UsarObjeto(Escopeta e) : void
+    + UsarObjeto(ArrayList<Objeto> enemigo) : void
+}
+
+class Cigarro extends Objeto {
+    + utilizarCigarro(Jugador j) : void
+}
+
+class Lupa extends Objeto {
+    + UsarLupa(Escopeta e) : void
+    + crearContenedor(JFrame ventana, ArrayList<String> balas) : void
+}
+
+class Cerveza extends Objeto {
+    + UsarCerveza(Escopeta e) : void
+    + mostrarBala() : void
+}
+
+class Adrenalina extends Objeto {
+    - botones : ArrayList<JButton>
+    - obs : ArrayList<CajaDeObjetos>
+    - misObs : ArrayList<CajaDeObjetos>
+    - ventana : JFrame;
+    - cierreAutomatico : Timer
+    + recibirCajaDelJugador(ArrayList<CajaDeObjetos> obs) : void
+    + usarAdrenalina(CajaDeObjetos enemigo) : void
+    + crearContenedor() : void
+    + llenarBotones() : void
+}
+
+class Esposa extends Objeto {
+    + usarEsposa(Jugador j) : void
+}
+
+class Sierra extends Objeto {
+    + DOBLE = 2 : int
+    + usarSierra(Escopeta e) : void
+}
+
+class CajaDeObjetos {
+    - caja : ArrayList<Objeto>
+	- botones : ArrayList<JButton>
+	- ventana : JFrame
+	- objeto : Objeto
+    - MAX_OBJETOS = 8 : int
+    + entregarCaja() : void
+    + mostrarCaja() : void
+    + crearContenedor() : void
+    + llenarBotones() : void
+    + getCaja() : ArrayList<Objeto>
+    + getBotones() : ArrayList<JButton>
+    + getVentana() : JFrame
+}
+
+class IniciarJuego {
+    + main(String[] args) : void
+}
+IniciarJuego ..> Tablero
+Objeto --* Jugador
+JButton --* Jugador
+Escopeta --* Jugador
+Objeto --* CajaDeObjetos
+JFrame --* CajaDeObjetos
+JButton --* CajaDeObjetos
+JButton --* Adrenalina
+CajaDeObjetos --* Adrenalina
+JFrame --* Adrenalina
+Timer --* Adrenalina
+@enduml
+
