@@ -19,7 +19,7 @@ public class Adrenalina extends Objeto {
         posicionAdrenalina = posicion;
     }
 
-    public void usarAdrenalina(CajaDeObjetos enemigo) {
+     public void usarAdrenalina(CajaDeObjetos enemigo) {
         enemigaObs = enemigo.getCaja();
         ventana = new JFrame();
         ventana.setTitle("CAJA DE OBJETOS ENEMIGA");
@@ -27,12 +27,16 @@ public class Adrenalina extends Objeto {
         crearContenedor();
         ventana.setVisible(true);
 
-      
-        cierreAutomatico = new Timer(10000, e -> ventana.dispose());
+        cierreAutomatico = new Timer(90000, e -> {
+            ventana.dispose();  
+            if (posicionAdrenalina >= 0 && posicionAdrenalina < misObs.size()) {
+                misObs.remove(posicionAdrenalina); 
+            }
+        });
         cierreAutomatico.setRepeats(false); 
-        cierreAutomatico.start(); 
+        cierreAutomatico.start();
     }
-   
+
     public void crearContenedor() {
         botones.clear();
         llenarBotones();

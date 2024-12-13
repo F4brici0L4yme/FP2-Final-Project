@@ -39,12 +39,12 @@ public class Tableroo extends JFrame {
     }
     public void createContents() {
         /*Centro*/
-        JButton botonEscopeta = new JButton(shotgun);
+        JButton botonEscopeta = new JButton(shotgun);  
         add(botonEscopeta, BorderLayout.CENTER);
         botonEscopeta.addActionListener(e -> mostrarOpcionesEscopeta());
     
         /*Izquierda */
-        JPanel panelVidas = new JPanel(new GridLayout(4, 1));
+        JPanel panelVidas = new JPanel(new GridLayout(4, 1)); 
         panelVidasJ1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actualizarVidas(panelVidasJ1, jugador1.getVida());
         panelVidas.add(new JLabel(jugador2.getNombre()));
@@ -80,38 +80,29 @@ public class Tableroo extends JFrame {
         imagenYnombre.add(nombreJugadorActual);
         imagenYnombre.add(imagenJugadorActual);
     
-        // Ajustar tamaños preferidos
-        imagenYnombre.setPreferredSize(new Dimension(150, 80)); // Ajusta la altura
+        imagenYnombre.setPreferredSize(new Dimension(150, 80));
         panelInferior.add(imagenYnombre, BorderLayout.WEST);
     
-        // Crear el JTextArea y el JScrollPane
         logEventos = new JTextArea(5, 30);
         logEventos.setEditable(false);
         logEventos.setLineWrap(true);
         logEventos.setWrapStyleWord(true);
-        logEventos.setPreferredSize(new Dimension(300, 100)); // Ajusta la altura
-    
-        // Crear JScrollPane para logEventos
+
         JScrollPane scrollLogEventos = new JScrollPane(logEventos);
-        scrollLogEventos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // Siempre mostrar barra vertical
+        scrollLogEventos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         panelInferior.add(scrollLogEventos, BorderLayout.CENTER);
-    
-        // Añadir al JFrame
         repartirCajaJugador(jugador1);
         repartirCajaJugador(jugador2);
         add(panelInferior, BorderLayout.SOUTH);
+
         mostrarInformacionEscopeta(logEventos);
     }
     
-    // Método para agregar texto al log y hacer que se desplace automáticamente
     public void agregarTextoLog(String texto) {
         logEventos.append(texto + "\n");
-        // Desplazar el caret al final del contenido
         logEventos.setCaretPosition(logEventos.getDocument().getLength());
     }
     
-    
-
     public void actualizarVidas(JPanel panelVidas, int vidas) {
         panelVidas.removeAll();
         for (int i = 0; i < vidas; i++) {
@@ -128,14 +119,12 @@ public class Tableroo extends JFrame {
                 this, "¿A quién deseas disparar?", "Disparo",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, opciones, opciones[0]);
-    
-        // Obtener la bala actual
+
         String balaDisparada = escopeta.getMunicion().get(0);
         boolean balaEsReal = balaDisparada.equals("roja");
     
-        // Determinar objetivo y mensajes
         Jugador objetivo = null;
-        if (respuesta == 0) { // Disparar al enemigo
+        if (respuesta == 0) {
             objetivo = turnoJugador1 ? jugador2 : jugador1;
             if (balaEsReal) {
                 escopeta.disparar(objetivo);
@@ -154,7 +143,10 @@ public class Tableroo extends JFrame {
         }
         escopeta.getMunicion().remove(0);
         if (respuesta != 1 || balaEsReal) {
-            cambiarTurno();
+            System.out.println(objetivo.estaEsposado());
+            if(!objetivo.estaEsposado()){
+                cambiarTurno();
+            }
         }
         actualizarVidas(panelVidasJ1, jugador1.getVida());
         actualizarVidas(panelVidasJ2, jugador2.getVida());
@@ -198,14 +190,12 @@ public class Tableroo extends JFrame {
     }
 
     public void seleccionarInventario(Jugador jugador) {
-        
         if (jugador.getCajaObjetos().getCaja().isEmpty()) {
             JOptionPane.showMessageDialog(this, jugador.getNombre() + " Aquí no hay objetos...");
             return;
         }
 
         SwingWorker<Objeto, Void> worker = new SwingWorker<>() {
-            @Override
             protected Objeto doInBackground() {
                 CountDownLatch latch = new CountDownLatch(1);
                 
@@ -249,8 +239,6 @@ public class Tableroo extends JFrame {
                 }
             }
         };
-
-        // Ejecutar el SwingWorker
         worker.execute();
     }
     
@@ -289,7 +277,7 @@ public class Tableroo extends JFrame {
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Esposa) {
                 logEventos.append("Se ha utilizado la esposa...\n");
-                ((Esposa) jugadorActual.objeto_a_Usar()).usarEsposa(jugadorActual);
+                ((Esposa) jugadorActual.objeto_a_Usar()).usarEsposa(jugadorEnemigo);
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Lupa) {
                 logEventos.append("Se ha utilizado la lupa...\n");
