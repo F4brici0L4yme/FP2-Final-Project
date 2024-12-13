@@ -28,17 +28,22 @@ class Tablero extends JFrame {
     + balaAzulIcon : ImageIcon
     + balaRojaIcon : ImageIcon
     + cajaIcon : ImageIcon
+    - imagenRedimensionada : Image
+    - cajaRedimensionada : ImageIcon
     + imagenJugadorActual : JLabel
+    + nombreJugadorActual : JLabel
     + panelVidasJ1 : JPanel
     + panelVidasJ2 : JPanel
     + panelInventario : JPanel
     + logEventos : JTextArea
+    + logEventos2v : JScrollBar
     + escopeta : Escopeta
     + turnoJugador1 : boolean
     + jugador1 : Jugador
     + jugador2 : Jugador
     + Tablero()
     + createContents() : void
+    + agregarTextoLog(String texto) : void
     + actualizarVidas(JPanel panelVidas, int vidas) : void
     + mostrarOpcionesEscopeta() : void
     + verificarGanador() : void
@@ -48,6 +53,7 @@ class Tablero extends JFrame {
     + mostrarInformacionEscopeta(JTextArea logEventos) : void
     + usarCajaDelJugador(Jugador jugadorActual, Jugador jugador2, Escopeta escopeta) : void
     + repartirCajaJugador(Jugador jugador) : void
+    + main(String[] args) : void
 }
 
 interface DanioBala <<interface>> {
@@ -72,6 +78,7 @@ class Jugador{
     - esposado = false : boolean
     - botones : ArrayList<JButton>
     - objeto : Objeto
+    - posicion : int
     + jugador(String nombre)
     + jugador()
     + aumentarVida () : void
@@ -81,6 +88,7 @@ class Jugador{
     + seleccionarObjeto(CountDownLatch latch) : void
     + objeto_a_Usar() : Objeto
     + setEstaEsposado(boolean estaEsposado) : void
+    + retornarPosicion() : int
     + estaEsposado() : boolean
     + getVida() : int
     + getNombre() : String
@@ -88,10 +96,7 @@ class Jugador{
 }
 
 class Objeto {
-    - static contador = 0 : int
-    - id : int
-    + Objeto()
-    + getId() : int
+
 }
 
 class Cigarro extends Objeto {
@@ -106,15 +111,20 @@ class Lupa extends Objeto {
 class Cerveza extends Objeto {
     - bala : String
     + UsarCerveza(Escopeta e, JFrame ventanaPrincipal) : void
-    + Escopeta e, JFrame ventanaPrincipal : void
+    + crearContenedor(JFrame ventana) : void
 }
 
 class Adrenalina extends Objeto {
+    - cofreArriba : ImageIcon
+    - cofreAbajo : ImageIcon
+    - panel1 : JPanel
+    - panel2 : JPanel
     - botones : ArrayList<JButton>
-    - obs : ArrayList<CajaDeObjetos>
+    - enemigaObs : ArrayList<Objeto>
     - misObs : ArrayList<CajaDeObjetos>
     - ventana : JFrame;
     - cierreAutomatico : Timer
+    - posicionAdrenalina : int
     + recibirCajaDelJugador(ArrayList<CajaDeObjetos> obs) : void
     + usarAdrenalina(CajaDeObjetos enemigo) : void
     + crearContenedor() : void
@@ -122,6 +132,7 @@ class Adrenalina extends Objeto {
 }
 
 class Esposa extends Objeto {
+    + static ESPOSADO = true : boolean
     + usarEsposa(Jugador j) : void
 }
 
@@ -131,9 +142,13 @@ class Sierra extends Objeto {
 }
 
 class CajaDeObjetos {
+    - cofreArriba : ImageIcon
+    - cofreAbajo : ImageIcon
     - caja : ArrayList<Objeto>
     - botones : ArrayList<JButton>
     - ventana : JFrame
+    - panel1 : JPanel
+    - panel2 : JPanel
     - static MAX_OBJETOS = 8 : int
     + entregarCaja() : void
     + mostrarCaja() : void
@@ -142,17 +157,15 @@ class CajaDeObjetos {
     + getCaja() : ArrayList<Objeto>
     + getBotones() : ArrayList<JButton>
     + getVentana() : JFrame
+    + modificarBotones(JButton boton) : void
+    + redimensionarImagen(String path) : ImageIcon
+    + reproducirSonido(String sonidoCargarBalas) : void
 }
 
-class IniciarJuego {
-    + main(String[] args) : void
-}
-IniciarJuego ..> Tablero
 Tablero ..> Jugador
 Tablero ..> Escopeta
 Objeto --* Jugador
 CajaDeObjetos --* Jugador
-Escopeta --* Jugador
 Objeto --* CajaDeObjetos
 CajaDeObjetos --* Adrenalina
 @enduml
