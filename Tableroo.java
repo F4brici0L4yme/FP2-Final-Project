@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.util.concurrent.CountDownLatch;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 public class Tableroo extends JFrame {
@@ -9,6 +12,7 @@ public class Tableroo extends JFrame {
     public ImageIcon fondo = new ImageIcon("./images/bg.jpg");
     public ImageIcon imagenP1 = new ImageIcon("./images/p1.png");
     public ImageIcon imagenP2 = new ImageIcon("./images/p2.png");
+    public ImageIcon Mesa = new ImageIcon("./images/mesa.png");
     public ImageIcon balaAzulIcon = new ImageIcon("./images/balaAzul.png");
     public ImageIcon balaRojaIcon = new ImageIcon("./images/balaRoja.png");
     public ImageIcon cajaIcon = new ImageIcon("./images/cofre_cerrado.png");
@@ -36,8 +40,21 @@ public class Tableroo extends JFrame {
     }
     public void createContents() {
         /*Centro*/
+        JPanel panelCentral = new JPanel() {
+	        @Override
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g);
+	            if (Mesa.getImage() != null) {
+	                g.drawImage(Mesa.getImage(), 0, 0, getWidth(), getHeight(), this);
+	            }
+	        }
+	    };
+
+        panelCentral.setLayout(new FlowLayout());
         JButton botonEscopeta = new JButton(shotgun);
-        add(botonEscopeta, BorderLayout.CENTER);
+        panelCentral.add(botonEscopeta);
+
+        add(panelCentral, BorderLayout.CENTER);
         botonEscopeta.addActionListener(e -> mostrarOpcionesEscopeta());
         modificarBotones(botonEscopeta);
     
@@ -135,6 +152,7 @@ public class Tableroo extends JFrame {
                 logEventos.append("Fue una bala verdadera...\n");
             } else {
                 logEventos.append("Era una bala falsa...\n");
+                reproducirSonido("./sonidos/sonidoDisparoFalso.wav");
             }
         } else if (respuesta == 1) {
             objetivo = turnoJugador1 ? jugador1 : jugador2;
@@ -143,7 +161,7 @@ public class Tableroo extends JFrame {
                 logEventos.append("Fue una bala verdadera...\n");
             } else {
                 logEventos.append("Era una bala falsa... ¡Ganas un turno por tu valentía!\n");
-                /*Añadir sonido de bala falsa */
+                reproducirSonido("./sonidos/sonidoDisparoFalso.wav");
             }
         }
         escopeta.getMunicion().remove(0);
@@ -297,7 +315,16 @@ public class Tableroo extends JFrame {
         boton.setBorderPainted(false);
         boton.setFocusPainted(false);
     }
-
+    public void reproducirSonido(String sonidoCargarBalas){
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResource(sonidoCargarBalas));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
         new Tableroo();
     }
