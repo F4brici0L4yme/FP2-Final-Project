@@ -1,4 +1,5 @@
 import java.util.*;
+import javax.sound.sampled.*;
 
 public class Escopeta implements DanioBala {
     private ArrayList<String> balas;
@@ -25,6 +26,8 @@ public class Escopeta implements DanioBala {
             }
         }
         Collections.shuffle(balas);
+        reproducirSonido("./sonidos/sonidaRecarga.wav");
+
     }
     public ArrayList<String> getMunicion() {
             return balas;
@@ -37,12 +40,23 @@ public class Escopeta implements DanioBala {
         }
         else
             j.reducirVida(DanioBala.DANIO_NORMAL);
+        reproducirSonido("./sonidos/donidoDisparo.wav");
+        
     }
 
     public void esBalaSierra(boolean esSierra) {
         balaSierra = esSierra;
     }
-
+    public void reproducirSonido(String sonidoCargarBalas){
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResource(sonidoCargarBalas));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
 }
 

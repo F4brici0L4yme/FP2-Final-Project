@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -19,7 +18,7 @@ public class Adrenalina extends Objeto {
         posicionAdrenalina = posicion;
     }
 
-     public void usarAdrenalina(CajaDeObjetos enemigo) {
+    public void usarAdrenalina(CajaDeObjetos enemigo) {
         enemigaObs = enemigo.getCaja();
         ventana = new JFrame();
         ventana.setTitle("CAJA DE OBJETOS ENEMIGA");
@@ -28,12 +27,12 @@ public class Adrenalina extends Objeto {
         ventana.setVisible(true);
 
         cierreAutomatico = new Timer(90000, e -> {
-            ventana.dispose();  
+            ventana.dispose();
             if (posicionAdrenalina >= 0 && posicionAdrenalina < misObs.size()) {
-                misObs.remove(posicionAdrenalina); 
+                misObs.remove(posicionAdrenalina);
             }
         });
-        cierreAutomatico.setRepeats(false); 
+        cierreAutomatico.setRepeats(false);
         cierreAutomatico.start();
     }
 

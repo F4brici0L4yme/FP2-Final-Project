@@ -5,6 +5,7 @@ import javax.swing.*;
 public class Tableroo extends JFrame {
     public ImageIcon shotgun = new ImageIcon("./images/shotgun.png");
     public ImageIcon corazonLleno = new ImageIcon("./images/vida.png");
+    public ImageIcon corazonRoto = new ImageIcon("./images/corazonRoto.png");
     public ImageIcon fondo = new ImageIcon("./images/bg.jpg");
     public ImageIcon imagenP1 = new ImageIcon("./images/p1.png");
     public ImageIcon imagenP2 = new ImageIcon("./images/p2.png");
@@ -13,10 +14,6 @@ public class Tableroo extends JFrame {
     public ImageIcon cajaIcon = new ImageIcon("./images/cofre_cerrado.png");
     Image imagenRedimensionada = cajaIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
     ImageIcon cajaRedimensionada = new ImageIcon(imagenRedimensionada);
-    // Image imagenRedimensionada2 = imagenP1.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-    // ImageIcon p1Redimensionado = new ImageIcon(imagenRedimensionada2);
-    // Image imagenRedimensionada3 = imagenP2.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-    // ImageIcon p2Redimensionado = new ImageIcon(imagenRedimensionada3);
     public JLabel imagenJugadorActual;
     public JLabel nombreJugadorActual;
     public JPanel panelVidasJ1, panelVidasJ2;
@@ -39,12 +36,13 @@ public class Tableroo extends JFrame {
     }
     public void createContents() {
         /*Centro*/
-        JButton botonEscopeta = new JButton(shotgun);  
+        JButton botonEscopeta = new JButton(shotgun);
         add(botonEscopeta, BorderLayout.CENTER);
         botonEscopeta.addActionListener(e -> mostrarOpcionesEscopeta());
+        modificarBotones(botonEscopeta);
     
         /*Izquierda */
-        JPanel panelVidas = new JPanel(new GridLayout(4, 1)); 
+        JPanel panelVidas = new JPanel(new GridLayout(4, 1));
         panelVidasJ1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actualizarVidas(panelVidasJ1, jugador1.getVida());
         panelVidas.add(new JLabel(jugador2.getNombre()));
@@ -68,6 +66,8 @@ public class Tableroo extends JFrame {
         panelCajas.add(botonCajaEnemiga);
         panelCajas.add(new JLabel("Mi caja"));
         panelCajas.add(botonCaja);
+        modificarBotones(botonCaja);
+        modificarBotones(botonCajaEnemiga);
         add(panelCajas, BorderLayout.EAST);
     
         /*Abajo */
@@ -109,6 +109,10 @@ public class Tableroo extends JFrame {
             JLabel corazon = new JLabel(corazonLleno);
             panelVidas.add(corazon);
         }
+        for(int i = 0; i< 4 - vidas; i++){
+            JLabel corazon = new JLabel(corazonRoto);
+            panelVidas.add(corazon);
+        }
         panelVidas.revalidate();
         panelVidas.repaint();
     }
@@ -132,18 +136,18 @@ public class Tableroo extends JFrame {
             } else {
                 logEventos.append("Era una bala falsa...\n");
             }
-        } else if (respuesta == 1) { // Disparar a ti mismo
+        } else if (respuesta == 1) {
             objetivo = turnoJugador1 ? jugador1 : jugador2;
             if (balaEsReal) {
                 escopeta.disparar(objetivo);
                 logEventos.append("Fue una bala verdadera...\n");
             } else {
                 logEventos.append("Era una bala falsa... ¡Ganas un turno por tu valentía!\n");
+                /*Añadir sonido de bala falsa */
             }
         }
         escopeta.getMunicion().remove(0);
         if (respuesta != 1 || balaEsReal) {
-            System.out.println(objetivo.estaEsposado());
             if(!objetivo.estaEsposado()){
                 cambiarTurno();
             }
@@ -202,7 +206,7 @@ public class Tableroo extends JFrame {
                 jugador.seleccionarObjeto(latch);
 
                 try {
-                    latch.await(); 
+                    latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return null;
@@ -218,17 +222,13 @@ public class Tableroo extends JFrame {
                     Objeto objeto = get();
     
                     if (objeto != null) {
-                        System.out.println("Objeto seleccionado: " + objeto.getClass().getSimpleName());
-
                         usarCajaDelJugador(
                             turnoJugador1 ? jugador1 : jugador2,
                             turnoJugador1 ? jugador2 : jugador1,
                             escopeta
                         );
                         if(!(objeto instanceof Adrenalina)) {
-                            System.out.println("Antes de remover: " + jugador.getCajaObjetos().getCaja());
                             jugador.getCajaObjetos().getCaja().remove(jugador.retornarPosicion());
-                            System.out.println("Después de remover: " + jugador.getCajaObjetos().getCaja());
                         }
                         logEventos.append(jugador.getNombre() + " usó " + objeto.getClass().getSimpleName() + "\n");
                     } else {
@@ -293,9 +293,9 @@ public class Tableroo extends JFrame {
         jugador.repartirObjetos();
     }
     public void modificarBotones(JButton boton){
-        boton.setContentAreaFilled(false); // Hace el botón transparente
-        boton.setBorderPainted(false);     // Quita el borde del botón
-        boton.setFocusPainted(false);      // Quita el indicador de foco
+        boton.setContentAreaFilled(false);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
     }
 
     public static void main(String[] args) {
