@@ -1,18 +1,16 @@
-package CajaJuego;
-
+import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
-import java.awt.*;
 
-public class Lupa extends CajaDeObjetos{
+public class Lupa extends Objeto {
 
-	public void UsarObjeto(Escopeta e) {
+	public void UsarLupa(Escopeta e) {
 		ArrayList<String> balas = e.getMunicion();
 		JFrame ventana = new JFrame();
 		ventana.setSize(400,100);
 		ventana.setLayout(new FlowLayout(FlowLayout.CENTER));
-		ventana.setVisible(true);
 		crearContenedor(ventana, balas);
+		ventana.setVisible(true);
 	}
 	
 	public void crearContenedor(JFrame ventana, ArrayList<String> balas) {
