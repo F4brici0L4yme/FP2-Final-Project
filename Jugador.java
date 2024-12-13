@@ -1,5 +1,6 @@
 import java.awt.event.*;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import javax.swing.*;
 
 public class Jugador {
@@ -10,6 +11,7 @@ public class Jugador {
     private boolean esposado = false;
     private ArrayList<JButton> botones;
     private Objeto objeto;
+    private int posicion;
     
 
     public Jugador() {
@@ -35,26 +37,31 @@ public class Jugador {
         obs.entregarCaja();
     }
 
-    public void seleccionarObjeto() {
+    public void seleccionarObjeto(CountDownLatch latch) {
         int contador = 0;
         obs.mostrarCaja();
         botones = obs.getBotones();
+
         for (JButton b : botones) {
-            b.addActionListener(new Listener(contador));
+            b.addActionListener(new Listener(contador, latch));
             contador++;
         }
     }
 
     private class Listener implements ActionListener {
         private int pos;
+        private CountDownLatch latch;
 
-        public Listener(int pos) {
+        public Listener(int pos, CountDownLatch latch) {
             this.pos = pos;
+            this.latch = latch;
         }
 
         public void actionPerformed(ActionEvent e) {
             objeto = obs.getCaja().get(pos);
+            posicion = pos;
             obs.getVentana().dispose();
+            latch.countDown();
         }
     }
 
@@ -65,6 +72,10 @@ public class Jugador {
 	public Objeto objeto_a_Usar() {
 		return objeto;
 	}
+
+    public int retornarPosicion() {
+        return posicion;
+    }
 
     public boolean estaEsposado(){
         return esposado;

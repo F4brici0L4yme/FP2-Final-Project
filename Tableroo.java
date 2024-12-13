@@ -13,11 +13,16 @@ public class Tableroo extends JFrame {
     public ImageIcon cajaIcon = new ImageIcon("./images/cofre_cerrado.png");
     Image imagenRedimensionada = cajaIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
     ImageIcon cajaRedimensionada = new ImageIcon(imagenRedimensionada);
+    // Image imagenRedimensionada2 = imagenP1.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+    // ImageIcon p1Redimensionado = new ImageIcon(imagenRedimensionada2);
+    // Image imagenRedimensionada3 = imagenP2.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+    // ImageIcon p2Redimensionado = new ImageIcon(imagenRedimensionada3);
     public JLabel imagenJugadorActual;
     public JLabel nombreJugadorActual;
     public JPanel panelVidasJ1, panelVidasJ2;
     public JPanel panelInventario;
     public JTextArea logEventos;
+    public JScrollBar logEventos2v;
     public Escopeta escopeta = new Escopeta();
     public boolean turnoJugador1 = false;
     public Jugador jugador1 = new Jugador(JOptionPane.showInputDialog("Ingrese el nombre del jugador 1"));
@@ -37,24 +42,26 @@ public class Tableroo extends JFrame {
         JButton botonEscopeta = new JButton(shotgun);
         add(botonEscopeta, BorderLayout.CENTER);
         botonEscopeta.addActionListener(e -> mostrarOpcionesEscopeta());
+    
         /*Izquierda */
         JPanel panelVidas = new JPanel(new GridLayout(4, 1));
-        panelVidasJ1 = new JPanel(new FlowLayout(FlowLayout.LEFT));/*LEFT hace que no se ajuste al centro y quede más chevere */
+        panelVidasJ1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actualizarVidas(panelVidasJ1, jugador1.getVida());
-        panelVidas.add(new JLabel(jugador1.getNombre()));
+        panelVidas.add(new JLabel(jugador2.getNombre()));
         panelVidas.add(panelVidasJ1);
-
+    
         panelVidasJ2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actualizarVidas(panelVidasJ2, jugador2.getVida());
-        panelVidas.add(new JLabel(jugador2.getNombre()));
+        panelVidas.add(new JLabel(jugador1.getNombre()));
         panelVidas.add(panelVidasJ2);
-
+    
         add(panelVidas, BorderLayout.WEST);
+    
         /*Derecha */
-        JPanel panelCajas = new JPanel(new GridLayout(4,1));
+        JPanel panelCajas = new JPanel(new GridLayout(4, 1));
         JButton botonCaja = new JButton(cajaRedimensionada);
         JButton botonCajaEnemiga = new JButton(cajaRedimensionada);
-        
+    
         botonCaja.addActionListener(e -> seleccionarInventario(turnoJugador1 ? jugador1 : jugador2));
         botonCajaEnemiga.addActionListener(e -> mostrarInventario(turnoJugador1 ? jugador2 : jugador1));
         panelCajas.add(new JLabel("Caja Enemiga"));
@@ -62,30 +69,48 @@ public class Tableroo extends JFrame {
         panelCajas.add(new JLabel("Mi caja"));
         panelCajas.add(botonCaja);
         add(panelCajas, BorderLayout.EAST);
-
+    
         /*Abajo */
         JPanel panelInferior = new JPanel(new BorderLayout());
-
+    
         imagenJugadorActual = new JLabel(imagenP1);
         nombreJugadorActual = new JLabel(jugador1.getNombre());
-        JPanel imagenYnombre = new JPanel(new GridLayout(2,1));
+        JPanel imagenYnombre = new JPanel();
+        imagenYnombre.setLayout(new BoxLayout(imagenYnombre, BoxLayout.Y_AXIS));
         imagenYnombre.add(nombreJugadorActual);
         imagenYnombre.add(imagenJugadorActual);
-        panelInferior.add(imagenJugadorActual, BorderLayout.WEST);
-
+    
+        // Ajustar tamaños preferidos
+        imagenYnombre.setPreferredSize(new Dimension(150, 80)); // Ajusta la altura
+        panelInferior.add(imagenYnombre, BorderLayout.WEST);
+    
+        // Crear el JTextArea y el JScrollPane
         logEventos = new JTextArea(5, 30);
         logEventos.setEditable(false);
         logEventos.setLineWrap(true);
         logEventos.setWrapStyleWord(true);
-        modificarBotones(botonCaja);
-        modificarBotones(botonCajaEnemiga);
-        modificarBotones(botonEscopeta);
-        panelInferior.add(logEventos, BorderLayout.CENTER);
+        logEventos.setPreferredSize(new Dimension(300, 100)); // Ajusta la altura
+    
+        // Crear JScrollPane para logEventos
+        JScrollPane scrollLogEventos = new JScrollPane(logEventos);
+        scrollLogEventos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // Siempre mostrar barra vertical
+        panelInferior.add(scrollLogEventos, BorderLayout.CENTER);
+    
+        // Añadir al JFrame
         repartirCajaJugador(jugador1);
         repartirCajaJugador(jugador2);
         add(panelInferior, BorderLayout.SOUTH);
         mostrarInformacionEscopeta(logEventos);
     }
+    
+    // Método para agregar texto al log y hacer que se desplace automáticamente
+    public void agregarTextoLog(String texto) {
+        logEventos.append(texto + "\n");
+        // Desplazar el caret al final del contenido
+        logEventos.setCaretPosition(logEventos.getDocument().getLength());
+    }
+    
+    
 
     public void actualizarVidas(JPanel panelVidas, int vidas) {
         panelVidas.removeAll();
@@ -173,37 +198,35 @@ public class Tableroo extends JFrame {
     }
 
     public void seleccionarInventario(Jugador jugador) {
-        // Verificar si la caja está vacía
+        
         if (jugador.getCajaObjetos().getCaja().isEmpty()) {
             JOptionPane.showMessageDialog(this, jugador.getNombre() + " Aquí no hay objetos...");
             return;
         }
 
-        // Usar SwingWorker para manejar la selección de objetos
         SwingWorker<Objeto, Void> worker = new SwingWorker<>() {
             @Override
             protected Objeto doInBackground() {
                 CountDownLatch latch = new CountDownLatch(1);
                 
-                // Mostrar la ventana para seleccionar objeto
                 jugador.seleccionarObjeto(latch);
 
                 try {
-                    latch.await(); // Esperar sin bloquear la interfaz gráfica
+                    latch.await(); 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     return null;
                 }
 
-                // Retornar el objeto seleccionado
                 return jugador.objeto_a_Usar();
             }
 
             @Override
             protected void done() {
                 try {
-                    // Obtener el objeto seleccionado
+                    
                     Objeto objeto = get();
+    
                     if (objeto != null) {
                         System.out.println("Objeto seleccionado: " + objeto.getClass().getSimpleName());
 
@@ -212,10 +235,11 @@ public class Tableroo extends JFrame {
                             turnoJugador1 ? jugador2 : jugador1,
                             escopeta
                         );
-                        System.out.println("Antes de remover: " + jugador.getCajaObjetos().getCaja());
-                        jugador.getCajaObjetos().getCaja().remove(jugador.retornarPosicion());
-                        System.out.println("Después de remover: " + jugador.getCajaObjetos().getCaja());
-                        
+                        if(!(objeto instanceof Adrenalina)) {
+                            System.out.println("Antes de remover: " + jugador.getCajaObjetos().getCaja());
+                            jugador.getCajaObjetos().getCaja().remove(jugador.retornarPosicion());
+                            System.out.println("Después de remover: " + jugador.getCajaObjetos().getCaja());
+                        }
                         logEventos.append(jugador.getNombre() + " usó " + objeto.getClass().getSimpleName() + "\n");
                     } else {
                         logEventos.append(jugador.getNombre() + " no seleccionó ningún objeto\n");
@@ -241,12 +265,12 @@ public class Tableroo extends JFrame {
     public void usarCajaDelJugador(Jugador jugadorActual, Jugador jugadorEnemigo, Escopeta escopeta){
         
             if (jugadorActual.objeto_a_Usar() instanceof Adrenalina) {
-                logEventos.append("Se ha utilizado la Adrenalina...\n");
+                logEventos.append("Se ha utilizado la adrenalina...\n");
                 ((Adrenalina) jugadorActual.objeto_a_Usar()).usarAdrenalina(jugadorEnemigo.getCajaObjetos());
-                ((Adrenalina) jugadorActual.objeto_a_Usar()).recibirCajaDelJugador(jugadorActual.getCajaObjetos());
+                ((Adrenalina) jugadorActual.objeto_a_Usar()).recibirCajaDelJugador(jugadorActual.getCajaObjetos(), jugadorActual.retornarPosicion());
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Cerveza) {
-                logEventos.append("Se ha utilizado la Cerveza...\n");
+                logEventos.append("Se ha utilizado la cerveza...\n");
                 ((Cerveza) jugadorActual.objeto_a_Usar()).usarCerveza(escopeta, this);
                 if(escopeta.getMunicion().isEmpty()){
                     JOptionPane.showMessageDialog(null, "Ronda terminada...");
@@ -258,17 +282,17 @@ public class Tableroo extends JFrame {
                 }
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Cigarro) {
-                logEventos.append("Se ha utilizado el Cigarro...\n");
+                logEventos.append("Se ha utilizado el cigarro...\n");
                 ((Cigarro) jugadorActual.objeto_a_Usar()).utilizarCigarro(jugadorActual);
                 actualizarVidas(panelVidasJ1, jugador1.getVida());
                 actualizarVidas(panelVidasJ2, jugador2.getVida());
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Esposa) {
-                logEventos.append("Se ha utilizado las Esposas...\n");
+                logEventos.append("Se ha utilizado la esposa...\n");
                 ((Esposa) jugadorActual.objeto_a_Usar()).usarEsposa(jugadorActual);
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Lupa) {
-                logEventos.append("Se ha utilizado la Lupa...\n");
+                logEventos.append("Se ha utilizado la lupa...\n");
                 ((Lupa) jugadorActual.objeto_a_Usar()).UsarLupa(escopeta, this);
             }
             else {

@@ -48,13 +48,12 @@ public class CajaDeObjetos {
 		botones.clear();
         llenarBotones();
         ventana.setLayout(new GridLayout(2, 4, 7, 7));
-        for (JButton b : botones) 
+        for (JButton b : botones)
             ventana.add(b);
     }
     public void llenarBotones() {
         for (Objeto ob : caja) {
             JButton boton;
-
             if (ob instanceof Lupa) {
                 boton = new JButton("Lupa");
             } else if (ob instanceof Cigarro) {
@@ -66,11 +65,31 @@ public class CajaDeObjetos {
             } else if (!(ob instanceof Adrenalina)) {
                 boton = new JButton("Esposa");
             } else 
-            	boton = new JButton("Adrenalina");
+            	boton = new JButton("Adrenalina");//lajo, allen vice estructura discretas, girl gilmore girl, sflix***
             
             botones.add(boton);
         }
     }
+   	// public void llenarBotones() {
+    // 	for (Objeto ob : caja) {
+	// 		JButton boton = new JButton();
+	// 		if (ob instanceof Lupa) {
+	// 			boton.setIcon(new ImageIcon("./images/lupa.png"));
+	// 		} else if (ob instanceof Cigarro) {
+	// 			boton.setIcon(new ImageIcon("./images/cigarro.png"));
+	// 		} else if (ob instanceof Sierra) {
+	// 			boton.setIcon(new ImageIcon("./images/sierra.png"));
+	// 		} else if (ob instanceof Cerveza) {
+	// 			boton.setIcon(new ImageIcon("./images/cerveza.png"));
+	// 		} else if (ob instanceof Esposa) {
+	// 			boton.setIcon(new ImageIcon("./images/esposa.png"));
+	// 		} else if (ob instanceof Adrenalina) {
+	// 			boton.setIcon(new ImageIcon("./images/adrenalina.png"));
+	// 		}
+	// 		boton.setBorderPainted(false);  // Opcional: Remueve el borde.
+	// 		botones.add(boton);
+   	// 	 }
+	// }
     public ArrayList<Objeto> getCaja() {
         return caja;
     }

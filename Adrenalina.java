@@ -12,9 +12,11 @@ public class Adrenalina extends Objeto {
     private ArrayList<Objeto> misObs;
     private JFrame ventana; 
     private Timer cierreAutomatico;
+    private int posicionAdrenalina;
 
-    public void recibirCajaDelJugador(CajaDeObjetos obs) {
+    public void recibirCajaDelJugador(CajaDeObjetos obs, int posicion) {
         misObs = obs.getCaja();
+        posicionAdrenalina = posicion;
     }
 
     public void usarAdrenalina(CajaDeObjetos enemigo) {
@@ -32,8 +34,8 @@ public class Adrenalina extends Objeto {
     }
    
     public void crearContenedor() {
+        botones.clear();
         llenarBotones();
-        int cantObjetos = botones.size();
         int posicion = 0;
 
         ventana.setLayout(new GridLayout(2, 4, 7, 7));
@@ -53,6 +55,7 @@ public class Adrenalina extends Objeto {
 
         public void actionPerformed(ActionEvent e) {
             cierreAutomatico.stop();
+            misObs.remove(posicionAdrenalina);
             misObs.add(enemigaObs.get(pos));
             enemigaObs.remove(pos);
             ventana.dispose();
@@ -71,7 +74,7 @@ public class Adrenalina extends Objeto {
                 boton = new JButton("Sierra");
             } else if (ob instanceof Cerveza) {
                 boton = new JButton("Cerveza");
-            } else if (!(ob instanceof Adrenalina)) {
+            } else if (ob instanceof Esposa) {
                 boton = new JButton("Esposa");
             }
 
