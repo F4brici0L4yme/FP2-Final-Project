@@ -44,8 +44,9 @@ class Tablero extends JFrame {
     + verificarGanador() : void
     + cambiarTurno(); : void
     + mostrarInventario(Jugador jugador) : void
+    + seleccionar Inventario(Jugador jugador) : void
     + mostrarInformacionEscopeta(JTextArea logEventos) : void
-    + usar(Jugador jugadorActual, String objetoEnTexto, Jugador jugador2, Escopeta escopeta) : void
+    + usarCajaDelJugador(Jugador jugadorActual, Jugador jugador2, Escopeta escopeta) : void
     + repartirCajaJugador(Jugador jugador) : void
 }
 
@@ -61,16 +62,14 @@ class Escopeta implements DanioBala {
     + cargarBalas() : void
     + getMunicion() : ArrayList<String>
     + disparar(Jugador j) : void
-    + esBalaSerrucho() :void
+    + esBalaSierra(boolean esSierra) : boolean
 }
 
 class Jugador{
     - nombre : String
     - vida=4 : int 
-    - estado = true : boolean
     - obs : CajaDeObjetos
     - esposado = false : boolean
-    - e : Escopeta
     - botones : ArrayList<JButton>
     - objeto : Objeto
     + jugador(String nombre)
@@ -79,18 +78,20 @@ class Jugador{
     + reducirVida(int cantidad) : void
     + mostrarObjetos() : void
     + repartirObjetos() : void
-    + seleccionarObjeto() : void
+    + seleccionarObjeto(CountDownLatch latch) : void
     + objeto_a_Usar() : Objeto
-    + setEstaEsposado() : void
+    + setEstaEsposado(boolean estaEsposado) : void
     + estaEsposado() : boolean
     + getVida() : int
     + getNombre() : String
     + getCajaObjetos() : CajaDeObjetos
 }
 
-abstract class Objeto {
-    + UsarObjeto(Escopeta e) : void
-    + UsarObjeto(ArrayList<Objeto> enemigo) : void
+class Objeto {
+    - static contador = 0 : int
+    - id : int
+    + Objeto()
+    + getId() : int
 }
 
 class Cigarro extends Objeto {
@@ -103,8 +104,9 @@ class Lupa extends Objeto {
 }
 
 class Cerveza extends Objeto {
-    + UsarCerveza(Escopeta e) : void
-    + mostrarBala() : void
+    - bala : String
+    + UsarCerveza(Escopeta e, JFrame ventanaPrincipal) : void
+    + Escopeta e, JFrame ventanaPrincipal : void
 }
 
 class Adrenalina extends Objeto {
@@ -132,7 +134,6 @@ class CajaDeObjetos {
     - caja : ArrayList<Objeto>
     - botones : ArrayList<JButton>
     - ventana : JFrame
-    - objeto : Objeto
     - static MAX_OBJETOS = 8 : int
     + entregarCaja() : void
     + mostrarCaja() : void
