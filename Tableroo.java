@@ -12,7 +12,7 @@ public class Tableroo extends JFrame {
     public ImageIcon fondo = new ImageIcon("./images/bg.jpg");
     public ImageIcon imagenP1 = new ImageIcon("./images/p1.png");
     public ImageIcon imagenP2 = new ImageIcon("./images/p2.png");
-    public ImageIcon Mesa = new ImageIcon("./images/mesa.png");
+    public ImageIcon Mesa = new ImageIcon("./imageS/fondoParaMesa.jpg");
     public ImageIcon balaAzulIcon = new ImageIcon("./images/balaAzul.png");
     public ImageIcon balaRojaIcon = new ImageIcon("./images/balaRoja.png");
     public ImageIcon cajaIcon = new ImageIcon("./images/cofre_cerrado.png");
@@ -24,7 +24,7 @@ public class Tableroo extends JFrame {
     public JPanel panelInventario;
     public JTextArea logEventos;
     public JScrollBar logEventos2v;
-    public Escopeta escopeta = new Escopeta();
+    public Escopeta escopeta;
     public boolean turnoJugador1 = false;
     public Jugador jugador1 = new Jugador(JOptionPane.showInputDialog("Ingrese el nombre del jugador 1"));
     public Jugador jugador2 = new Jugador(JOptionPane.showInputDialog("Ingrese el nombre del jugador 2"));
@@ -40,6 +40,7 @@ public class Tableroo extends JFrame {
     }
     public void createContents() {
         /*Centro*/
+        escopeta = new Escopeta();
         JPanel panelCentral = new JPanel() {
 	        @Override
 	        protected void paintComponent(Graphics g) {
@@ -50,9 +51,13 @@ public class Tableroo extends JFrame {
 	        }
 	    };
 
-        panelCentral.setLayout(new FlowLayout());
         JButton botonEscopeta = new JButton(shotgun);
-        panelCentral.add(botonEscopeta);
+        panelCentral.setLayout(new GridBagLayout()); 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0; 
+        gbc.gridy = 0; 
+        gbc.anchor = GridBagConstraints.CENTER; 
+        panelCentral.add(botonEscopeta, gbc);
 
         add(panelCentral, BorderLayout.CENTER);
         botonEscopeta.addActionListener(e -> mostrarOpcionesEscopeta());
@@ -97,10 +102,10 @@ public class Tableroo extends JFrame {
         imagenYnombre.add(nombreJugadorActual);
         imagenYnombre.add(imagenJugadorActual);
     
-        imagenYnombre.setPreferredSize(new Dimension(150, 80));
+        imagenYnombre.setPreferredSize(new Dimension(80, 200));
         panelInferior.add(imagenYnombre, BorderLayout.WEST);
     
-        logEventos = new JTextArea(5, 30);
+        logEventos = new JTextArea(5, 50);
         logEventos.setEditable(false);
         logEventos.setLineWrap(true);
         logEventos.setWrapStyleWord(true);
@@ -111,7 +116,6 @@ public class Tableroo extends JFrame {
         repartirCajaJugador(jugador1);
         repartirCajaJugador(jugador2);
         add(panelInferior, BorderLayout.SOUTH);
-
         mostrarInformacionEscopeta(logEventos);
     }
     
@@ -186,7 +190,7 @@ public class Tableroo extends JFrame {
     public void verificarGanador() {
         if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {
             String ganador = (jugador1.getVida() > 0) ? jugador1.getNombre() : jugador2.getNombre();
-            JOptionPane.showMessageDialog(this, "¡El ganador es " + ganador + "!");
+            JOptionPane.showMessageDialog(this, "¡¡GANADOR!!");
             System.exit(0);
         }
     }
@@ -248,7 +252,6 @@ public class Tableroo extends JFrame {
                         if(!(objeto instanceof Adrenalina)) {
                             jugador.getCajaObjetos().getCaja().remove(jugador.retornarPosicion());
                         }
-                        logEventos.append(jugador.getNombre() + " usó " + objeto.getClass().getSimpleName() + "\n");
                     } else {
                         logEventos.append(jugador.getNombre() + " no seleccionó ningún objeto\n");
                     }

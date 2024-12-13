@@ -10,7 +10,10 @@ public class CajaDeObjetos {
 	private ArrayList<Objeto> caja = new ArrayList<Objeto>();
 	private ArrayList<JButton> botones = new ArrayList<JButton>();
 	private JFrame ventana;
-	ImageIcon fondo = new ImageIcon("./images/texturaCaja.jpg");
+	private JPanel panel1;
+	private JPanel panel2;
+	private ImageIcon cofreArriba = new ImageIcon("./images/cofre_arriba.png");
+	private ImageIcon cofreAbajo = new ImageIcon("./images/cofre_abajo.png");
 	private static final int MAX_OBJETOS = 8;
 	
     public void entregarCaja() {
@@ -41,7 +44,7 @@ public class CajaDeObjetos {
 	public void mostrarCaja() {
 	    ventana = new JFrame();
 		ventana.setTitle("CAJA DE OBJETOS");
-	    ventana.setSize(700, 400);
+	    ventana.setSize(700, 600);
 	    ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    crearContenedor();
 	    ventana.setVisible(true);
@@ -50,31 +53,39 @@ public class CajaDeObjetos {
 	}
 
 	public void crearContenedor() {
-		botones.clear();
-        llenarBotones();
-        ventana.setLayout(new GridLayout(2, 4, 7, 7));
-        for (JButton b : botones)
-            ventana.add(b);
-    }
-    // public void llenarBotones() {
-    //     for (Objeto ob : caja) {
-    //         JButton boton;
-    //         if (ob instanceof Lupa) {
-    //             boton = new JButton(lupaIcon);
-    //         } else if (ob instanceof Cigarro) {
-    //             boton = new JButton("Cigarro");
-    //         } else if (ob instanceof Sierra) {
-    //             boton = new JButton("Sierra");
-    //         } else if (ob instanceof Cerveza) {
-    //             boton = new JButton("Cerveza");
-    //         } else if (!(ob instanceof Adrenalina)) {
-    //             boton = new JButton("Esposa");
-    //         } else 
-    //         	boton = new JButton("Adrenalina");//lajo, allen vice estructura discretas, girl gilmore girl, sflix***
-            
-    //         botones.add(boton);
-    //     }
-    // }
+	    ventana.setLayout(new GridLayout(2, 1));
+	    botones.clear();
+	    llenarBotones();
+
+	    panel1 = new JPanel() {
+	        @Override
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g);
+	            if (cofreArriba.getImage() != null) {
+	                g.drawImage(cofreArriba.getImage(), 0, 0, getWidth(), getHeight(), this);
+	            }
+	        }
+	    };
+
+	    panel2 = new JPanel() {
+	        @Override
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g);
+	            if (cofreAbajo.getImage() != null) {
+	                g.drawImage(cofreAbajo.getImage(), 0, 0, getWidth(), getHeight(), this);
+	            }
+	        }
+	    };
+
+	    panel2.setLayout(new GridLayout(2, 4, 7, 7));
+
+	    for (JButton b : botones) 
+	        panel2.add(b);
+
+	    ventana.add(panel1);
+	    ventana.add(panel2);
+	}
+
    	public void llenarBotones() {
     	for (Objeto ob : caja) {
 			JButton boton = new JButton();

@@ -1,5 +1,6 @@
 import java.util.*;
 import javax.sound.sampled.*;
+import javax.swing.JOptionPane;
 
 public class Escopeta implements DanioBala {
     private ArrayList<String> balas;
@@ -14,9 +15,10 @@ public class Escopeta implements DanioBala {
 
     public void cargarBalas() {
         balas.clear();
-        int cantidadBalas = (int)(Math.random()*6);
         balas.add("azul");
+        int cantidadBalas = (int)(Math.random()*6);
         balas.add("roja");
+        String balasAMostrar = "[" + balas.get(0) + "] [" +balas.get(1) + "] ";
         for (int i = 0; i < cantidadBalas; i++) {
             if (random.nextBoolean()) {
                 balas.add("roja");
@@ -24,7 +26,9 @@ public class Escopeta implements DanioBala {
             else {
                 balas.add("azul");
             }
+            balasAMostrar += "[" + balas.get(i+2) + "] ";
         }
+        JOptionPane.showMessageDialog(null, balasAMostrar);
         Collections.shuffle(balas);
         reproducirSonido("./sonidos/sonidaRecarga.wav");
 
