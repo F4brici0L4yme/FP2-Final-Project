@@ -1,44 +1,56 @@
 import java.util.*;
-public class Escopeta extends Tablero {
+
+public class Escopeta implements DanioBala {
     private ArrayList<String> balas;
     private Random random;
-    // Constructor de la clase Escopeta
+    private boolean balaSierra = false;
+
     public Escopeta() {
-        this.balas = new ArrayList<>();
-        this.random = new Random();
-        cargarBalas(); // La escopeta se carga automáticamente al ser creada
+        balas = new ArrayList<String>();
+        random = new Random();
+        cargarBalas();
     }
-    private void cargarBalas() {
+
+    public void cargarBalas() {
         balas.clear();
-        int cantidadBalas = random.nextInt(5) + 2; 
-        // Aseguramos al menos una bala azul
+        int cantidadBalas = (int)(Math.random()*6);
         balas.add("azul");
-        for (int i = 1; i < cantidadBalas; i++) {
+        balas.add("roja");
+        for (int i = 0; i < cantidadBalas; i++) {
             if (random.nextBoolean()) {
                 balas.add("roja");
-            } else {
+            } 
+            else {
                 balas.add("azul");
             }
         }
-        Collections.shuffle(balas); // Mezcla las balas aleatoriamente
-        System.out.println("La escopeta ha sido cargada con balas mezcladas.");
+        Collections.shuffle(balas);
+    }
+    public ArrayList<String> getMunicion() {
+            return balas;
     }
 
-    // Método para disparar
-    public void disparar() {
-        if (balas.isEmpty()) {
-            System.out.println("No hay balas en la escopeta. Fin de la ronda.");
-            return;
+    public void disparar(Jugador j) {
+        if(balaSierra) {
+        j.reducirVida(Sierra.DOBLE);
+            balaSierra = false;
         }
-        String balaActual = balas.remove(0); // Obtiene y elimina la primera bala
-        if (balaActual.equals("roja")) {
-            System.out.println("¡Disparo con bala roja! El personaje recibe 1 de daño.");
-        } else {
-            System.out.println("¡Disparo con bala azul! No ocurre nada.");
-        }
+        else
+            j.reducirVida(DanioBala.DANIO_NORMAL);
     }
+<<<<<<< HEAD
     // Método para retornar el arreglo de balas
     public ArrayList<String> getBalas() {
         return new ArrayList<>(balas); // Retorna una copia del arreglo de balas
     }<
+=======
+
+    public void  esBalaSierra(boolean esSierra) {
+        balaSierra = esSierra;
+    }
+
+    
+>>>>>>> 49c68635df8a05d21f8c6e27232bd3576bfad960
 }
+
+
