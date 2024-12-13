@@ -1,8 +1,12 @@
-package CajaJuego;
-
-public class Cerveza extends CajaDeObjetos {
+public class Cerveza extends Objeto {
+	private String bala;
 	
-	public void UsarObjeto() {
+	public void UsarCerveza(Escopeta e) {
+		bala = e.getMunicion().remove(0);
 		
 	}
+	public void mostrarBala() {
+		System.out.println("La bala era: " + bala);
+	}
 }
+
