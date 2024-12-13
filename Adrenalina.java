@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -5,7 +6,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class Adrenalina extends Objeto {
-
+    
     private ArrayList<JButton> botones = new ArrayList<>();
     private ArrayList<Objeto>  enemigaObs;
     private ArrayList<Objeto> misObs;

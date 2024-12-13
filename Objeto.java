@@ -1,7 +1,14 @@
-import java.util.ArrayList;
-public abstract class Objeto extends Jugador{
-	public void UsarObjeto(Escopeta e) {
-	}
-	public void UsarObjeto(ArrayList<Objeto> enemigo) {
-	}
+
+public class Objeto {
+    private static int contador = 0; 
+    private int id; 
+
+    public Objeto() {
+        this.id = contador;
+        contador++;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

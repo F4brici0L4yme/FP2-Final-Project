@@ -3,38 +3,28 @@ import java.util.*;
 import javax.swing.*;
 
 public class Jugador {
+    
     private String nombre;
     private int vida=4;
-    private boolean estado = true;
     private CajaDeObjetos obs;
     private boolean esposado = false;
-    private Escopeta e;
     private ArrayList<JButton> botones;
     private Objeto objeto;
     
 
-    public Jugador(){
+    public Jugador() {
         this.nombre="Anonimo";
-        estado = true;
         obs = new CajaDeObjetos();
     }
     public Jugador(String nombre) {
         this.nombre=nombre;
-        estado = true;
         obs = new CajaDeObjetos();
     }
     public void aumentarVida () {
-        vida+=1; 
+        vida+=1;
     }
     public void reducirVida(int cantidad) {
         vida-=cantidad;
-        if (vida<=0){
-            vida=0;
-            estado=false;
-            System.out.println(nombre+" ha sido eliminado.");
-        }else{
-            System.out.println(nombre+" ahora tiene "+vida+" de vida.");
-        }
     }
     
     public void mostrarObjetos(){

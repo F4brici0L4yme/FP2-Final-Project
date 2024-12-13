@@ -1,5 +1,6 @@
 public class Cigarro extends Objeto{
     public void utilizarCigarro(Jugador j) {
-		j.aumentarVida();
+		if(j.getVida() < 4)
+			j.aumentarVida();
 	}
 }

@@ -19,7 +19,7 @@ public class Escopeta implements DanioBala {
         for (int i = 0; i < cantidadBalas; i++) {
             if (random.nextBoolean()) {
                 balas.add("roja");
-            } 
+            }
             else {
                 balas.add("azul");
             }
@@ -32,14 +32,14 @@ public class Escopeta implements DanioBala {
 
     public void disparar(Jugador j) {
         if(balaSierra) {
-        j.reducirVida(Sierra.DOBLE);
+            j.reducirVida(Sierra.DOBLE);
             balaSierra = false;
         }
         else
             j.reducirVida(DanioBala.DANIO_NORMAL);
     }
 
-    public void  esBalaSierra(boolean esSierra) {
+    public void esBalaSierra(boolean esSierra) {
         balaSierra = esSierra;
     }
 

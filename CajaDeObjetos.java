@@ -1,15 +1,13 @@
+
 import java.util.*;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
+import java.awt.*;
 public class CajaDeObjetos {
-	
+    public ImageIcon adrenalinaIcon = new ImageIcon("./images/adrenalina.png");
 	private ArrayList<Objeto> caja = new ArrayList<Objeto>();
 	private ArrayList<JButton> botones = new ArrayList<JButton>();
 	private JFrame ventana;
-	private Objeto objeto;
-	
 	private static final int MAX_OBJETOS = 8;
 	
     public void entregarCaja() {
@@ -36,17 +34,16 @@ public class CajaDeObjetos {
 	        else { break; }
 	    }
 	}
-	 
+	
 	public void mostrarCaja() {
-	    ventana = new JFrame(); 
-	    ventana.setTitle("CAJA DE OBJETOS");
+	    ventana = new JFrame();
+		ventana.setTitle("CAJA DE OBJETOS");
 	    ventana.setSize(700, 400);
-	    ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+	    ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    crearContenedor();
 	    ventana.setVisible(true);
 	}
 
-	
 	public void crearContenedor() {
 		botones.clear();
         llenarBotones();
@@ -54,7 +51,6 @@ public class CajaDeObjetos {
         for (JButton b : botones) 
             ventana.add(b);
     }
-
     public void llenarBotones() {
         for (Objeto ob : caja) {
             JButton boton;
@@ -75,7 +71,6 @@ public class CajaDeObjetos {
             botones.add(boton);
         }
     }
-
     public ArrayList<Objeto> getCaja() {
         return caja;
     }
