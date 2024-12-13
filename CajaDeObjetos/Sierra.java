@@ -1,5 +1,8 @@
-package CajaJuego;
+public class Sierra extends Objeto {
+	
+	public static final int DOBLE = 2;
 
-public class Sierra {
-
+	public void usarSierra(Escopeta e) {
+		e.esBalaSierra(true);
+	}
 }
