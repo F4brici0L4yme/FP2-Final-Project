@@ -21,26 +21,42 @@ class JFrame {
 
 class Tablero extends JFrame {
     + shotgun : ImageIcon
-    - imagenJugador1, imagenJugador2 : JLabel
-    - vidaasJugador1, vidasJugador2 : JLabel
-    - panelInventario : JPanel
-    - logEventos : JTextArea
-    - turnoJugador1 = true : boolean
+    + corazonLleno : ImageIcon
+    + fondo : ImageIcon
+    + imagenP1 : ImageIcon
+    + imagenP2 : ImageIcon
+    + balaAzulIcon : ImageIcon
+    + balaRojaIcon : ImageIcon
+    + cajaIcon : ImageIcon
+    + imagenJugadorActual : JLabel
+    + panelVidasJ1 : JPanel
+    + panelVidasJ2 : JPanel
+    + panelInventario : JPanel
+    + logEventos : JTextArea
+    + escopeta : Escopeta
+    + turnoJugador1 : boolean
+    + jugador1 : Jugador
+    + jugador2 : Jugador
     + Tablero()
-    + generarInventario() : void
-    + mostrarOpcionesDisparo() : void
-    + actualizarVidas() : void
+    + createContents() : void
+    + actualizarVidas(JPanel panelVidas, int vidas) : void
+    + mostrarOpcionesEscopeta() : void
     + verificarGanador() : void
     + cambiarTurno(); : void
+    + mostrarInventario(Jugador jugador) : void
+    + mostrarInformacionEscopeta(JTextArea logEventos) : void
+    + usar(Jugador jugadorActual, String objetoEnTexto, Jugador jugador2, Escopeta escopeta) : void
+    + repartirCajaJugador(Jugador jugador) : void
 }
 
-interface DanioBala {
+interface DanioBala <<interface>> {
     +int DANIO_NORMAL
 }
 
 class Escopeta implements DanioBala {
     - balas : ArrayList<String>
     - random : Random
+    - balaSierra = false : boolean
     + Escopeta()
     + cargarBalas() : void
     + getMunicion() : ArrayList<String>
@@ -65,6 +81,7 @@ class Jugador{
     + repartirObjetos() : void
     + seleccionarObjeto() : void
     + objeto_a_Usar() : Objeto
+    + setEstaEsposado() : void
     + estaEsposado() : boolean
     + getVida() : int
     + getNombre() : String
@@ -107,16 +124,16 @@ class Esposa extends Objeto {
 }
 
 class Sierra extends Objeto {
-    + DOBLE = 2 : int
+    + static DOBLE = 2 : int
     + usarSierra(Escopeta e) : void
 }
 
 class CajaDeObjetos {
     - caja : ArrayList<Objeto>
-	- botones : ArrayList<JButton>
-	- ventana : JFrame
-	- objeto : Objeto
-    - MAX_OBJETOS = 8 : int
+    - botones : ArrayList<JButton>
+    - ventana : JFrame
+    - objeto : Objeto
+    - static MAX_OBJETOS = 8 : int
     + entregarCaja() : void
     + mostrarCaja() : void
     + crearContenedor() : void
@@ -130,15 +147,11 @@ class IniciarJuego {
     + main(String[] args) : void
 }
 IniciarJuego ..> Tablero
+Tablero ..> Jugador
+Tablero ..> Escopeta
 Objeto --* Jugador
-JButton --* Jugador
+CajaDeObjetos --* Jugador
 Escopeta --* Jugador
 Objeto --* CajaDeObjetos
-JFrame --* CajaDeObjetos
-JButton --* CajaDeObjetos
-JButton --* Adrenalina
 CajaDeObjetos --* Adrenalina
-JFrame --* Adrenalina
-Timer --* Adrenalina
 @enduml
-
