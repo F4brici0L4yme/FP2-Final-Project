@@ -1,5 +1,5 @@
-package CajaJuego;
-
-public class Cigarro {
-
+public class Cigarro extends Objeto{
+    public void utilizarCigarro(Jugador j) {
+		j.aumentarVida();
+	}
 }
