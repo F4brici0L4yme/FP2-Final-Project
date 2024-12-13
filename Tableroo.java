@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.concurrent.CountDownLatch;
 import javax.swing.*;
 
 public class Tableroo extends JFrame {
@@ -10,7 +11,10 @@ public class Tableroo extends JFrame {
     public ImageIcon balaAzulIcon = new ImageIcon("./images/balaAzul.png");
     public ImageIcon balaRojaIcon = new ImageIcon("./images/balaRoja.png");
     public ImageIcon cajaIcon = new ImageIcon("./images/cofre_cerrado.png");
+    Image imagenRedimensionada = cajaIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+    ImageIcon cajaRedimensionada = new ImageIcon(imagenRedimensionada);
     public JLabel imagenJugadorActual;
+    public JLabel nombreJugadorActual;
     public JPanel panelVidasJ1, panelVidasJ2;
     public JPanel panelInventario;
     public JTextArea logEventos;
@@ -34,20 +38,22 @@ public class Tableroo extends JFrame {
         add(botonEscopeta, BorderLayout.CENTER);
         botonEscopeta.addActionListener(e -> mostrarOpcionesEscopeta());
         /*Izquierda */
-        JPanel panelVidas = new JPanel(new GridLayout(2, 1));
+        JPanel panelVidas = new JPanel(new GridLayout(4, 1));
         panelVidasJ1 = new JPanel(new FlowLayout(FlowLayout.LEFT));/*LEFT hace que no se ajuste al centro y quede más chevere */
         actualizarVidas(panelVidasJ1, jugador1.getVida());
+        panelVidas.add(new JLabel(jugador1.getNombre()));
         panelVidas.add(panelVidasJ1);
 
         panelVidasJ2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actualizarVidas(panelVidasJ2, jugador2.getVida());
+        panelVidas.add(new JLabel(jugador2.getNombre()));
         panelVidas.add(panelVidasJ2);
 
         add(panelVidas, BorderLayout.WEST);
         /*Derecha */
         JPanel panelCajas = new JPanel(new GridLayout(4,1));
-        JButton botonCaja = new JButton(cajaIcon);
-        JButton botonCajaEnemiga = new JButton(cajaIcon);
+        JButton botonCaja = new JButton(cajaRedimensionada);
+        JButton botonCajaEnemiga = new JButton(cajaRedimensionada);
         
         botonCaja.addActionListener(e -> seleccionarInventario(turnoJugador1 ? jugador1 : jugador2));
         botonCajaEnemiga.addActionListener(e -> mostrarInventario(turnoJugador1 ? jugador2 : jugador1));
@@ -61,16 +67,23 @@ public class Tableroo extends JFrame {
         JPanel panelInferior = new JPanel(new BorderLayout());
 
         imagenJugadorActual = new JLabel(imagenP1);
+        nombreJugadorActual = new JLabel(jugador1.getNombre());
+        JPanel imagenYnombre = new JPanel(new GridLayout(2,1));
+        imagenYnombre.add(nombreJugadorActual);
+        imagenYnombre.add(imagenJugadorActual);
         panelInferior.add(imagenJugadorActual, BorderLayout.WEST);
 
         logEventos = new JTextArea(5, 30);
         logEventos.setEditable(false);
         logEventos.setLineWrap(true);
         logEventos.setWrapStyleWord(true);
+        modificarBotones(botonCaja);
+        modificarBotones(botonCajaEnemiga);
+        modificarBotones(botonEscopeta);
         panelInferior.add(logEventos, BorderLayout.CENTER);
-        add(panelInferior, BorderLayout.SOUTH);
         repartirCajaJugador(jugador1);
         repartirCajaJugador(jugador2);
+        add(panelInferior, BorderLayout.SOUTH);
         mostrarInformacionEscopeta(logEventos);
     }
 
@@ -84,76 +97,58 @@ public class Tableroo extends JFrame {
         panelVidas.repaint();
     }
     /*Menú que sale al darle click a la escopeta */
-        public void mostrarOpcionesEscopeta() {
+    public void mostrarOpcionesEscopeta() {
         String[] opciones = {"Al enemigo", "A ti mismo"};
         int respuesta = JOptionPane.showOptionDialog(
                 this, "¿A quién deseas disparar?", "Disparo",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, opciones, opciones[0]);
+    
+        // Obtener la bala actual
         String balaDisparada = escopeta.getMunicion().get(0);
-        if (respuesta == 0) {
-            if (turnoJugador1) {
-                if(escopeta.getMunicion().get(0).equals("roja")){
-                    escopeta.disparar(jugador2);
-                    logEventos.append("Disparaste a " + jugador2.getNombre() + "\n");
-                }
-                else{
-                    logEventos.append("Era una bala falsa...\n");
-                }
-                escopeta.getMunicion().remove(0);
+        boolean balaEsReal = balaDisparada.equals("roja");
+    
+        // Determinar objetivo y mensajes
+        Jugador objetivo = null;
+        if (respuesta == 0) { // Disparar al enemigo
+            objetivo = turnoJugador1 ? jugador2 : jugador1;
+            if (balaEsReal) {
+                escopeta.disparar(objetivo);
+                logEventos.append("Fue una bala verdadera...\n");
             } else {
-                if(escopeta.getMunicion().get(0).equals("roja")){
-                    escopeta.disparar(jugador1);
-                    logEventos.append("Disparaste a " + jugador1.getNombre() + "\n");
-                }
-                else{
-                    logEventos.append("Era una bala falsa...\n");
-                }
-                escopeta.getMunicion().remove(0);
+                logEventos.append("Era una bala falsa...\n");
             }
-        } else if (respuesta == 1) {
-            if (turnoJugador1) {
-                if(escopeta.getMunicion().get(0).equals("roja")){
-                    escopeta.disparar(jugador1);
-                    logEventos.append("Era una bala verdadera...\n");
-                }
-                else{
-                    logEventos.append("Era una bala falsa...¡Ganas un turno por tu valentía!\n");
-                }
-                escopeta.getMunicion().remove(0);
+        } else if (respuesta == 1) { // Disparar a ti mismo
+            objetivo = turnoJugador1 ? jugador1 : jugador2;
+            if (balaEsReal) {
+                escopeta.disparar(objetivo);
+                logEventos.append("Fue una bala verdadera...\n");
             } else {
-                if(escopeta.getMunicion().get(0).equals("roja")){
-                    escopeta.disparar(jugador2);
-                    logEventos.append("Era una bala verdadera...\n");
-                }
-                else{
-                    logEventos.append("Era una bala falsa...¡Ganas un turno por tu valentía!\n");
-                }
-                escopeta.getMunicion().remove(0);
+                logEventos.append("Era una bala falsa... ¡Ganas un turno por tu valentía!\n");
             }
         }
+        escopeta.getMunicion().remove(0);
+        if (respuesta != 1 || balaEsReal) {
+            cambiarTurno();
+        }
+        actualizarVidas(panelVidasJ1, jugador1.getVida());
+        actualizarVidas(panelVidasJ2, jugador2.getVida());
         verificarGanador();
-        if(escopeta.getMunicion().isEmpty()){
-            JOptionPane.showMessageDialog(null, "Ronda terminada...");
+        if (escopeta.getMunicion().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ronda terminada...\n");
             escopeta.cargarBalas();
             logEventos.append("Nuevas balas insertadas:\n");
             mostrarInformacionEscopeta(logEventos);
             repartirCajaJugador(jugador1);
             repartirCajaJugador(jugador2);
         }
-        if(balaDisparada.equals("roja"))
-            cambiarTurno();
-        // if(jugador1.estaEsposado()) {
-        //     jugador1.setEstaEsposado(false);
-        // }
-        actualizarVidas(panelVidasJ1, jugador1.getVida());
-        actualizarVidas(panelVidasJ2, jugador2.getVida());
     }
     
     public void verificarGanador() {
         if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {
             String ganador = (jugador1.getVida() > 0) ? jugador1.getNombre() : jugador2.getNombre();
             JOptionPane.showMessageDialog(this, "¡El ganador es " + ganador + "!");
+            System.exit(0);
         }
     }
     
@@ -161,9 +156,11 @@ public class Tableroo extends JFrame {
         turnoJugador1 = !turnoJugador1;
         if (turnoJugador1){
             imagenJugadorActual.setIcon(imagenP2);
+            nombreJugadorActual.setText(jugador2.getNombre());
         }
         else{
             imagenJugadorActual.setIcon(imagenP1);
+            nombreJugadorActual.setText(jugador2.getNombre());
         }
     }
 
@@ -176,33 +173,81 @@ public class Tableroo extends JFrame {
     }
 
     public void seleccionarInventario(Jugador jugador) {
+        // Verificar si la caja está vacía
         if (jugador.getCajaObjetos().getCaja().isEmpty()) {
-            JOptionPane.showMessageDialog(this, jugador.getNombre() + "Aquí no hay objetos...");
+            JOptionPane.showMessageDialog(this, jugador.getNombre() + " Aquí no hay objetos...");
             return;
         }
-        jugador.seleccionarObjeto();
-        usarCajaDelJugador(turnoJugador1 ? jugador1 : jugador2, turnoJugador1 ? jugador2 : jugador1, escopeta);
-        Objeto objeto = jugador.objeto_a_Usar();
-        jugador.getCajaObjetos().getCaja().remove(objeto.getId());
+
+        // Usar SwingWorker para manejar la selección de objetos
+        SwingWorker<Objeto, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Objeto doInBackground() {
+                CountDownLatch latch = new CountDownLatch(1);
+                
+                // Mostrar la ventana para seleccionar objeto
+                jugador.seleccionarObjeto(latch);
+
+                try {
+                    latch.await(); // Esperar sin bloquear la interfaz gráfica
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
+                // Retornar el objeto seleccionado
+                return jugador.objeto_a_Usar();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    // Obtener el objeto seleccionado
+                    Objeto objeto = get();
+                    if (objeto != null) {
+                        System.out.println("Objeto seleccionado: " + objeto.getClass().getSimpleName());
+
+                        usarCajaDelJugador(
+                            turnoJugador1 ? jugador1 : jugador2,
+                            turnoJugador1 ? jugador2 : jugador1,
+                            escopeta
+                        );
+                        System.out.println("Antes de remover: " + jugador.getCajaObjetos().getCaja());
+                        jugador.getCajaObjetos().getCaja().remove(jugador.retornarPosicion());
+                        System.out.println("Después de remover: " + jugador.getCajaObjetos().getCaja());
+                        
+                        logEventos.append(jugador.getNombre() + " usó " + objeto.getClass().getSimpleName() + "\n");
+                    } else {
+                        logEventos.append(jugador.getNombre() + " no seleccionó ningún objeto\n");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        // Ejecutar el SwingWorker
+        worker.execute();
     }
     
     public void mostrarInformacionEscopeta(JTextArea logEventos){
         logEventos.append("La escopeta se cargó con " + escopeta.getMunicion().size() + " cartuchos\n");
-        for(int i = 0; i<escopeta.getMunicion().size(); i++){
-            logEventos.append("[" + escopeta.getMunicion().get(i).toUpperCase() + "] ");
-        }
+        // for(int i = 0; i<escopeta.getMunicion().size(); i++){
+        //     logEventos.append("[" + escopeta.getMunicion().get(i).toUpperCase() + "] ");
+        // }
         logEventos.append("\n");
     }
 
-    public void usarCajaDelJugador(Jugador jugadorActual, Jugador jugador2, Escopeta escopeta){
+    public void usarCajaDelJugador(Jugador jugadorActual, Jugador jugadorEnemigo, Escopeta escopeta){
         
             if (jugadorActual.objeto_a_Usar() instanceof Adrenalina) {
-                ((Adrenalina) jugadorActual.objeto_a_Usar()).usarAdrenalina(jugador2.getCajaObjetos());
                 logEventos.append("Se ha utilizado la Adrenalina...\n");
+                ((Adrenalina) jugadorActual.objeto_a_Usar()).usarAdrenalina(jugadorEnemigo.getCajaObjetos());
+                ((Adrenalina) jugadorActual.objeto_a_Usar()).recibirCajaDelJugador(jugadorActual.getCajaObjetos());
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Cerveza) {
-                ((Cerveza) jugadorActual.objeto_a_Usar()).usarCerveza(escopeta, this);
                 logEventos.append("Se ha utilizado la Cerveza...\n");
+                ((Cerveza) jugadorActual.objeto_a_Usar()).usarCerveza(escopeta, this);
                 if(escopeta.getMunicion().isEmpty()){
                     JOptionPane.showMessageDialog(null, "Ronda terminada...");
                     escopeta.cargarBalas();
@@ -213,29 +258,33 @@ public class Tableroo extends JFrame {
                 }
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Cigarro) {
+                logEventos.append("Se ha utilizado el Cigarro...\n");
                 ((Cigarro) jugadorActual.objeto_a_Usar()).utilizarCigarro(jugadorActual);
                 actualizarVidas(panelVidasJ1, jugador1.getVida());
                 actualizarVidas(panelVidasJ2, jugador2.getVida());
-                logEventos.append("Se ha utilizado el Cigarro...\n");
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Esposa) {
-                ((Esposa) jugadorActual.objeto_a_Usar()).usarEsposa(jugadorActual);
                 logEventos.append("Se ha utilizado las Esposas...\n");
+                ((Esposa) jugadorActual.objeto_a_Usar()).usarEsposa(jugadorActual);
             }
             else if (jugadorActual.objeto_a_Usar() instanceof Lupa) {
-                ((Lupa) jugadorActual.objeto_a_Usar()).UsarLupa(escopeta, this);
                 logEventos.append("Se ha utilizado la Lupa...\n");
+                ((Lupa) jugadorActual.objeto_a_Usar()).UsarLupa(escopeta, this);
             }
             else {
-                ((Sierra) jugadorActual.objeto_a_Usar()).usarSierra(escopeta);
                 logEventos.append("Se ha utilizado La sierra\n");
+                ((Sierra) jugadorActual.objeto_a_Usar()).usarSierra(escopeta);
             }
     }
 
     public void repartirCajaJugador(Jugador jugador) {
         jugador.repartirObjetos();
     }
-
+    public void modificarBotones(JButton boton){
+        boton.setContentAreaFilled(false); // Hace el botón transparente
+        boton.setBorderPainted(false);     // Quita el borde del botón
+        boton.setFocusPainted(false);      // Quita el indicador de foco
+    }
 
     public static void main(String[] args) {
         new Tableroo();
