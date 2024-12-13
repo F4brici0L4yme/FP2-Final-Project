@@ -1,5 +1,6 @@
-package CajaJuego;
-
-public class Esposa {
-
+public class Esposa extends Objeto {
+	
+	public void usarEsposa(Jugador j) {
+		
+	}
 }
