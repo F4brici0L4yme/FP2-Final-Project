@@ -40,5 +40,5 @@ public class Escopeta extends Tablero {
     // Método para retornar el arreglo de balas
     public ArrayList<String> getBalas() {
         return new ArrayList<>(balas); // Retorna una copia del arreglo de balas
-    }
+    }<
 }
